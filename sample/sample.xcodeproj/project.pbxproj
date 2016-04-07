@@ -414,7 +414,7 @@
 				740FD4821BE2D5A000C2D91D /* ios */,
 			);
 			name = browser;
-			path = ../browser;
+			path = ../Sources/browser;
 			sourceTree = "<group>";
 		};
 		74EA71901BD04D86006808EA /* core */ = {
@@ -433,7 +433,7 @@
 				74EA71C11BD04E47006808EA /* SwipeExtensions.swift */,
 			);
 			name = core;
-			path = ../core;
+			path = ../Sources/core;
 			sourceTree = "<group>";
 		};
 		74EA71C31BD04E95006808EA /* network */ = {
@@ -446,7 +446,7 @@
 				74EA720E1BD0B611006808EA /* asset.xcdatamodeld */,
 			);
 			name = network;
-			path = ../network;
+			path = ../Sources/network;
 			sourceTree = "<group>";
 		};
 		74EA71D41BD04F8A006808EA /* script */ = {

@@ -21,11 +21,11 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
-class SwipeBook: NSObject, SwipePageDelegate {
+public class SwipeBook: NSObject, SwipePageDelegate {
     // Public properties
-    var viewSize:CGSize?
-    var pageIndex = 0
-    var langId = "en"
+    public var viewSize:CGSize?
+    public var pageIndex = 0
+    public var langId = "en"
 
     // Private properties
     private let bookInfo:[String:AnyObject]
@@ -35,7 +35,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
     //
     // Calculated properties (Public)
     //
-    var currenPage:SwipePage {
+    public var currenPage:SwipePage {
         return self.pages[self.pageIndex]
     }
     //
@@ -44,40 +44,40 @@ class SwipeBook: NSObject, SwipePageDelegate {
     private lazy var langs:[[String:AnyObject]]? = {
         return self.bookInfo["languages"] as? [[String:AnyObject]]
     }()
-    func languages() -> [[String:AnyObject]]? {
+    public func languages() -> [[String:AnyObject]]? {
         return self.langs
     }
     
-    lazy var title:String? = {
+    public lazy var title:String? = {
         if let title = self.bookInfo["title"] as? String {
             return title
         }
         return nil
     }()
 
-    lazy var horizontal:Bool = {
+    public lazy var horizontal:Bool = {
         return self.paging == "leftToRight"
     }()
 
-    lazy var orientation:String = {
+    public lazy var orientation:String = {
         if let paging = self.bookInfo["orientation"] as? String {
             return paging
         }
         return "portrait"
     }()
     
-    lazy var landscape:Bool = {
+    public lazy var landscape:Bool = {
         return self.orientation == "landscape"
     }()
     
-    lazy var viewstate:Bool = {
+    public lazy var viewstate:Bool = {
         if let state = self.bookInfo["viewstate"] as? Bool {
             return state
         }
         return true
     }()
     
-    lazy var pages:[SwipePage] = {
+    public lazy var pages:[SwipePage] = {
         var pages = [SwipePage]()
         if let pageInfos = self.bookInfo["pages"] as? [[String:AnyObject]] {
             for (index, pageInfo) in pageInfos.enumerate() {
@@ -122,14 +122,14 @@ class SwipeBook: NSObject, SwipePageDelegate {
         return "vertical"
     }()
     
-    lazy var backgroundColor:CGColor = {
+    public lazy var backgroundColor:CGColor = {
         if let value = self.bookInfo["bc"] as? String {
             return SwipeParser.parseColor(value)
         }
         return UIColor.blackColor().CGColor
     }()
     
-    lazy var dimension:CGSize = {
+    public lazy var dimension:CGSize = {
         let size = UIScreen.mainScreen().bounds.size
         if let dimension = self.bookInfo["dimension"] as? [CGFloat] {
             if dimension.count == 2 {
@@ -144,7 +144,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
         return size
     }()
     
-    lazy private var scale:CGSize = {
+    private lazy var scale:CGSize = {
         if let size = self.viewSize {
             let scale = size.width / self.dimension.width
             return CGSizeMake(scale, scale)
@@ -152,13 +152,13 @@ class SwipeBook: NSObject, SwipePageDelegate {
         return CGSizeMake(1.0, 1.0)
     }()
 
-    lazy private var markdown:SwipeMarkdown = {
+    private lazy var markdown:SwipeMarkdown = {
         let info = self.bookInfo["markdown"] as? [String:AnyObject]
         let markdown = SwipeMarkdown(info:info, scale:self.scale, dimension:self.dimension)
         return markdown
     }()
     
-    lazy private var voices:[String:[String:AnyObject]] = {
+    private lazy var voices:[String:[String:AnyObject]] = {
         if let info = self.bookInfo["voices"] as? [String:[String:AnyObject]] {
             return info
         }
@@ -181,7 +181,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
     }
     */
 
-    init?(bookInfo:[String:AnyObject], url:NSURL?) {
+    public init?(bookInfo:[String:AnyObject], url:NSURL?) {
         self.url = url
         self.bookInfo = bookInfo
     }
@@ -191,17 +191,17 @@ class SwipeBook: NSObject, SwipePageDelegate {
     }
     
     // <SwipePageDelegate> method
-    func dimension(page:SwipePage) -> CGSize {
+    public func dimension(page:SwipePage) -> CGSize {
         return self.dimension
     }
 
     // <SwipePageDelegate> method
-    func scale(page:SwipePage) -> CGSize {
+    public func scale(page:SwipePage) -> CGSize {
         return self.scale
     }
     
     // <SwipePageDelegate> method
-    func prototypeWith(name:String?) -> [String:AnyObject]? {
+    public func prototypeWith(name:String?) -> [String:AnyObject]? {
         if let key = name,
            let value = self.namedElements[key] as? [String:AnyObject] {
             return value
@@ -210,7 +210,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
     }
     
     // <SwipePageDelegate> method
-    func sceneWith(name:String?) -> SwipeScene? {
+    public func sceneWith(name:String?) -> SwipeScene? {
         let key = (name == nil) ? "*" : name!
         if let value = self.scenes[key] {
             return value
@@ -219,7 +219,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
     }
 
     // <SwipePageDelegate> method
-    func pathWith(name:String?) -> AnyObject? {
+    public func pathWith(name:String?) -> AnyObject? {
         if let key = name,
            let value:AnyObject = self.namedPaths[key] {
             return value
@@ -229,14 +229,14 @@ class SwipeBook: NSObject, SwipePageDelegate {
 
 #if !os(OSX) // REVIEW
     // <SwipePageDelegate> method
-    func speak(utterance:AVSpeechUtterance) {
+    public func speak(utterance:AVSpeechUtterance) {
         MyLog("SwipeBook speak", level:2)
         let synthesizer = SwipeSymthesizer.sharedInstance().synthesizer()
         synthesizer.speakUtterance(utterance)
     }
 
     // <SwipePageDelegate> method
-    func stopSpeaking() {
+    public func stopSpeaking() {
         MyLog("SwipeBook stop", level:2)
         let synthesizer = SwipeSymthesizer.sharedInstance().synthesizer()
         synthesizer.stopSpeakingAtBoundary(AVSpeechBoundary.Immediate)
@@ -244,12 +244,12 @@ class SwipeBook: NSObject, SwipePageDelegate {
 #endif
 
     // <SwipePageDelegate> method
-    func baseURL() -> NSURL? {
+    public func baseURL() -> NSURL? {
         return url
     }
     
     // <SwipePageDelegate> method
-    func voice(k:String?) -> [String:AnyObject] {
+    public func voice(k:String?) -> [String:AnyObject] {
         let key = (k == nil) ? "*" : k!
         if let voice = voices[key] {
             return voice
@@ -258,11 +258,11 @@ class SwipeBook: NSObject, SwipePageDelegate {
     }
 
     // <SwipePageDelegate> method
-    func languageIdentifier() -> String? {
+    public func languageIdentifier() -> String? {
         return langId
     }
 
-    func sourceCode() -> String {
+    public func sourceCode() -> String {
         if let url = self.url {
             let data = NSData(contentsOfURL: url)
             return NSString(data: data!, encoding: NSUTF8StringEncoding) as! String
@@ -270,7 +270,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
         return "N/A"
     }
     
-    func setActivePage(page:SwipePage) {
+    public func setActivePage(page:SwipePage) {
         if self.sceneActive != page.scene {
             MyLog("SwipeBook setActive \(self.sceneActive), \(page.scene)", level:1)
             if let scene = self.sceneActive {
@@ -283,11 +283,11 @@ class SwipeBook: NSObject, SwipePageDelegate {
         }
     }
 
-    func currentPageIndex() -> Int {
+    public func currentPageIndex() -> Int {
         return self.pageIndex
     }
 
-    func parseMarkdown(markdowns:[String]) -> NSAttributedString {
+    public func parseMarkdown(markdowns:[String]) -> NSAttributedString {
         return self.markdown.parse(markdowns)
     }
 }

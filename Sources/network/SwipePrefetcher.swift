@@ -20,7 +20,7 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
-class SwipePrefetcher {
+public class SwipePrefetcher {
     private let urls:[NSURL:String]
     private var urlsFetching = [NSURL]()
     private var urlsFetched = [NSURL:NSURL]()
@@ -29,15 +29,15 @@ class SwipePrefetcher {
     private var fComplete = false
     private var _progress = Float(0)
     
-    var progress:Float {
+    public var progress:Float {
         return _progress
     }
     
-    init(urls:[NSURL:String]) {
+    public init(urls:[NSURL:String]) {
         self.urls = urls
     }
     
-    func start(callback:(Bool, [NSURL], [NSError]) -> Void) {
+    public func start(callback:(Bool, [NSURL], [NSError]) -> Void) {
         if fComplete {
             MyLog("SWPrefe already completed", level:1)
             callback(true, self.urlsFailed, self.errors)
@@ -87,11 +87,11 @@ class SwipePrefetcher {
         }
     }
     
-    func map(url:NSURL) -> NSURL? {
+    public func map(url:NSURL) -> NSURL? {
         return urlsFetched[url]
     }
     
-    static func extensionForType(memeType:String) -> String {
+    public static func extensionForType(memeType:String) -> String {
         let ext:String
         if memeType == "video/quicktime" {
             ext = ".mov"
@@ -103,7 +103,7 @@ class SwipePrefetcher {
         return ext
     }
     
-    static func isMovie(mimeType:String) -> Bool {
+    public static func isMovie(mimeType:String) -> Bool {
         return mimeType == "video/quicktime" || mimeType == "video/mp4"
     }
 }

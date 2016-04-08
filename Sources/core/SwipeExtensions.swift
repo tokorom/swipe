@@ -8,14 +8,14 @@
 
 import UIKit
 
-extension String {
-    var localized:String {
+public extension String {
+    public var localized:String {
         return NSLocalizedString(self, comment:"")
     }
 }
 
-extension NSURL {
-    static func url(urlString:String, baseURL:NSURL?) -> NSURL? {
+public extension NSURL {
+    public static func url(urlString:String, baseURL:NSURL?) -> NSURL? {
         let url = NSURL(string: urlString, relativeToURL: baseURL)
         if let scheme = url?.scheme where scheme.characters.count > 0 {
             return url

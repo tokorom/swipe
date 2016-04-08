@@ -12,11 +12,11 @@ import Cocoa
 import UIKit
 #endif
 
-protocol SwipeDocumentViewerDelegate: NSObjectProtocol {
+public protocol SwipeDocumentViewerDelegate: NSObjectProtocol {
     func browseTo(url:NSURL)
 }
 
-protocol SwipeDocumentViewer {
+public protocol SwipeDocumentViewer {
     func documentTitle() -> String?
     func loadDocument(document:[String:AnyObject], size:CGSize, url:NSURL?, state:[String:AnyObject]?, callback:(Float, NSError?)->(Void)) throws
     func hideUI() -> Bool
@@ -28,6 +28,6 @@ protocol SwipeDocumentViewer {
     func reloadWithLanguageId(langId:String)
 }
 
-enum SwipeError: ErrorType {
+public enum SwipeError: ErrorType {
     case InvalidDocument
 }

@@ -36,7 +36,7 @@ let g_typeMapping:[String:Void -> UIViewController] = [
 // SwipeBrowser is the main UIViewController that is pushed into the navigation stack.
 // SwipeBrowser "hosts" another UIViewController, which supports SwipeDocumentViewer protocol.
 //
-class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
+public class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     static var stack = [SwipeBrowser]()
 
 #if os(iOS)
@@ -51,16 +51,16 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     @IBOutlet var btnLanguage:UIButton?
     private var landscapeMode = false
 #elseif os(tvOS)
-    override weak var preferredFocusedView: UIView? { return controller?.view }
+    public override weak var preferredFocusedView: UIView? { return controller?.view }
 #endif
     private var resourceRequest:NSBundleResourceRequest?
-    var url:NSURL? = NSBundle.mainBundle().URLForResource("index.swipe", withExtension: nil)
-    var jsonDocument:[String:AnyObject]?
-    var controller:UIViewController?
-    var documentViewer:SwipeDocumentViewer?
-    var ignoreViewState = false
+    public var url:NSURL? = NSBundle.mainBundle().URLForResource("index.swipe", withExtension: nil)
+    public var jsonDocument:[String:AnyObject]?
+    public var controller:UIViewController?
+    public var documentViewer:SwipeDocumentViewer?
+    public var ignoreViewState = false
 
-    func browseTo(url:NSURL) {
+    public func browseTo(url:NSURL) {
 #if os(iOS)
         let browser = SwipeBrowser(nibName: "SwipeBrowser", bundle: nil)
 #else
@@ -86,7 +86,7 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         MyLog("SWBrows deinit", level:1)
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         viewLoading?.alpha = 0
@@ -282,17 +282,17 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     }
     
 #if os(iOS)
-    override func prefersStatusBarHidden() -> Bool {
+    public override func prefersStatusBarHidden() -> Bool {
         return true
     }
     
     // NOTE: This function and supportedInterfaceOrientations will not be called on iPad
     // as long as the app supports multitasking.
-    override func shouldAutorotate() -> Bool {
+    public override func shouldAutorotate() -> Bool {
         return true
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+    public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         if let documentViewer = self.documentViewer where documentViewer.landscape() {
             return UIInterfaceOrientationMask.Landscape
         }
@@ -344,17 +344,17 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     }
     
 #if !os(OSX)
-    override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
     }
 
-    override func didReceiveMemoryWarning() {
+    public override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 #endif
     
-    override func viewDidDisappear(animated: Bool) {
+    public override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         if self.isBeingDismissed() {
             if let documentViewer = self.documentViewer,
@@ -387,13 +387,13 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
 #endif
     }
     
-    func becomeZombie() {
+    public func becomeZombie() {
         if let documentViewer = self.documentViewer {
             documentViewer.becomeZombie()
         }
     }
 
-    static func openURL(urlString:String) {
+    public static func openURL(urlString:String) {
         NSLog("SWBrose openURL \(SwipeBrowser.stack.count) \(urlString)")
 #if os(OSX)
         while SwipeBrowser.stack.count > 1 {

@@ -15,16 +15,16 @@ import UIKit
 
 import AVFoundation
 
-class SwipeSymthesizer: NSObject {
+public class SwipeSymthesizer: NSObject {
     private static let singleton = SwipeSymthesizer()
     let synth = AVSpeechSynthesizer()
     
-    static func sharedInstance() -> SwipeSymthesizer {
+    public static func sharedInstance() -> SwipeSymthesizer {
         return SwipeSymthesizer.singleton
     }
 
     // <BookObjectDelegate> method
-    func synthesizer() -> AVSpeechSynthesizer {
+    public func synthesizer() -> AVSpeechSynthesizer {
         return self.synth
     }
 }

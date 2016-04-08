@@ -11,7 +11,7 @@ import Cocoa
 import UIKit
 #endif
 
-class SwipeMarkdown {
+public class SwipeMarkdown {
     private var attrs = [String:[String:AnyObject]]()
     private var prefixes = [
         "-":"\u{2022} ", // bullet (U+2022), http://graphemica.com/%E2%80%A2
@@ -20,7 +20,7 @@ class SwipeMarkdown {
     private let scale:CGSize
     private var shadow:NSShadow?
 
-    func attributesWith(fontSize:CGFloat, paragraphSpacing:CGFloat, fontName:String? = nil) -> [String:AnyObject] {
+    public func attributesWith(fontSize:CGFloat, paragraphSpacing:CGFloat, fontName:String? = nil) -> [String:AnyObject] {
         let style = NSMutableParagraphStyle()
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping
         style.paragraphSpacing = paragraphSpacing * scale.height
@@ -50,7 +50,7 @@ class SwipeMarkdown {
         ]
     }
     
-    init(info:[String:AnyObject]?, scale:CGSize, dimension:CGSize) {
+    public init(info:[String:AnyObject]?, scale:CGSize, dimension:CGSize) {
         self.scale = scale
         if let params = info {
             shadow = SwipeParser.parseShadow(params["shadow"], scale: scale)
@@ -115,7 +115,7 @@ class SwipeMarkdown {
         }
     }
 
-    func parse(markdowns:[String]) -> NSAttributedString {
+    public func parse(markdowns:[String]) -> NSAttributedString {
         let strs = NSMutableAttributedString()
         var fCode = false
         for (index, markdown) in markdowns.enumerate() {

@@ -17,7 +17,7 @@ import UIKit
 #endif
 import ImageIO
 
-class SwipeParser {
+public class SwipeParser {
     //let color = NSRegularExpression(pattern: "#[0-9A-F]6", options: NSRegularExpressionOptions.CaseInsensitive, error: nil)
     static let colorMap = [
         "red":UIColor.redColor(),
@@ -38,7 +38,7 @@ class SwipeParser {
     
     static let regexColor = try! NSRegularExpression(pattern: "^#[A-F0-9]*$", options: NSRegularExpressionOptions.CaseInsensitive)
 
-    static func parseColor(value:AnyObject?, defaultColor:CGColor = UIColor.clearColor().CGColor) -> CGColor {
+    public static func parseColor(value:AnyObject?, defaultColor:CGColor = UIColor.clearColor().CGColor) -> CGColor {
         if value == nil {
             return defaultColor
         }
@@ -99,7 +99,7 @@ class SwipeParser {
         return UIColor.greenColor().CGColor
     }
     
-    static func transformedPath(path:CGPath, param:[String:AnyObject]?, size:CGSize) -> CGPath? {
+    public static func transformedPath(path:CGPath, param:[String:AnyObject]?, size:CGSize) -> CGPath? {
         if let value = param {
             var scale:CGSize?
             if let s = value["scale"] as? CGFloat {
@@ -119,7 +119,7 @@ class SwipeParser {
         return nil
     }
     
-    static func parseTransform(param:[String:AnyObject]?, scaleX:CGFloat, scaleY:CGFloat, base:[String:AnyObject]?, fSkipTranslate:Bool, fSkipScale:Bool) -> CATransform3D? {
+    public static func parseTransform(param:[String:AnyObject]?, scaleX:CGFloat, scaleY:CGFloat, base:[String:AnyObject]?, fSkipTranslate:Bool, fSkipScale:Bool) -> CATransform3D? {
         if let p = param {
             var value = p
             var xf = CATransform3DIdentity
@@ -177,21 +177,21 @@ class SwipeParser {
         return nil
     }
 
-    static func parseSize(param:AnyObject?, defalutValue:CGSize = CGSizeMake(0.0, 0.0), scale:CGSize) -> CGSize {
+    public static func parseSize(param:AnyObject?, defalutValue:CGSize = CGSizeMake(0.0, 0.0), scale:CGSize) -> CGSize {
         if let values = param as? [CGFloat] where values.count == 2 {
             return CGSizeMake(values[0] * scale.width, values[1] * scale.height)
         }
         return CGSizeMake(defalutValue.width * scale.width, defalutValue.height * scale.height)
     }
 
-    static func parseFloat(param:AnyObject?, defalutValue:Float = 1.0) -> Float {
+    public static func parseFloat(param:AnyObject?, defalutValue:Float = 1.0) -> Float {
         if let value = param as? Float {
             return value
         }
         return defalutValue
     }
 
-    static func parseCGFloat(param:AnyObject?, defalutValue:CGFloat = 0.0) -> CGFloat {
+    public static func parseCGFloat(param:AnyObject?, defalutValue:CGFloat = 0.0) -> CGFloat {
         if let value = param as? CGFloat {
             return value
         }
@@ -203,7 +203,7 @@ class SwipeParser {
     //   Object property: Instance properties overrides Base properties
     //   Array property: Merge (inherit properties in case of "id" matches, otherwise, just append)
     //
-    static func inheritProperties(object:[String:AnyObject], baseObject:[String:AnyObject]?) -> [String:AnyObject] {
+    public static func inheritProperties(object:[String:AnyObject], baseObject:[String:AnyObject]?) -> [String:AnyObject] {
         var ret = object
         if let prototype = baseObject {
             for (keyString, value) in prototype {
@@ -277,7 +277,7 @@ class SwipeParser {
 
     static let regexPercent = try! NSRegularExpression(pattern: "^[0-9\\.]+%$", options: NSRegularExpressionOptions.CaseInsensitive)
 
-    static func parsePercent(value:String, full:CGFloat, defaultValue:CGFloat) -> CGFloat {
+    public static func parsePercent(value:String, full:CGFloat, defaultValue:CGFloat) -> CGFloat {
         let num = regexPercent.numberOfMatchesInString(value, options: NSMatchingOptions(), range: NSMakeRange(0, value.characters.count))
         if num == 1 {
             return CGFloat((value as NSString).floatValue / 100.0) * full
@@ -285,7 +285,7 @@ class SwipeParser {
         return defaultValue
     }
 
-    static func parsePercentAny(value:AnyObject, full:CGFloat, defaultValue:CGFloat) -> CGFloat? {
+    public static func parsePercentAny(value:AnyObject, full:CGFloat, defaultValue:CGFloat) -> CGFloat? {
         if let f = value as? CGFloat {
             return f
         } else if let str = value as? String {
@@ -294,7 +294,7 @@ class SwipeParser {
         return nil
     }
     
-    static func parseFont(value:AnyObject?, scale:CGSize, full:CGFloat) -> UIFont {
+    public static func parseFont(value:AnyObject?, scale:CGSize, full:CGFloat) -> UIFont {
         var fontSize = CGFloat(20)
         var fontNames = [String]()
         if let info = value as? [String:AnyObject] {
@@ -318,7 +318,7 @@ class SwipeParser {
         return UIFont.systemFontOfSize(fontSize * scale.height)
     }
     
-    static func parseShadow(value:AnyObject?, scale:CGSize) -> NSShadow {
+    public static func parseShadow(value:AnyObject?, scale:CGSize) -> NSShadow {
         let shadow = NSShadow()
         if let info = value as? [String:AnyObject] {
             shadow.shadowOffset = SwipeParser.parseSize(info["offset"], defalutValue: CGSizeMake(1.0, 1.0), scale:scale)
@@ -328,7 +328,7 @@ class SwipeParser {
         return shadow
     }
 
-    static func localizedString(params:[String:AnyObject], langId:String?) -> String? {
+    public static func localizedString(params:[String:AnyObject], langId:String?) -> String? {
         if let key = langId,
                text = params[key] as? String {
             return text

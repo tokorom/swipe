@@ -26,7 +26,7 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
-protocol SwipeElementDelegate:NSObjectProtocol {
+public protocol SwipeElementDelegate:NSObjectProtocol {
     func prototypeWith(name:String?) -> [String:AnyObject]?
     func pathWith(name:String?) -> AnyObject?
     func shouldRepeat(element:SwipeElement) -> Bool
@@ -41,14 +41,14 @@ protocol SwipeElementDelegate:NSObjectProtocol {
     func languageIdentifier() -> String?
 }
 
-class SwipeElement:NSObject {
+public class SwipeElement:NSObject {
     // Debugging
     static var objectCount = 0
     private let pageIndex:Int
     
     // public properties
-    weak var delegate:SwipeElementDelegate!
-    var action:String?
+    public weak var delegate:SwipeElementDelegate!
+    public var action:String?
 
     private var view:UIView?
     private var layer:CALayer?
@@ -131,7 +131,7 @@ class SwipeElement:NSObject {
         }
     }
     
-    static func checkMemoryLeak() {
+    public static func checkMemoryLeak() {
         //assert(SwipeElement.objectCount == 0)
         if SwipeElement.objectCount > 0 {
             NSLog("SWElem  memory leak detected ###")
@@ -152,12 +152,12 @@ class SwipeElement:NSObject {
         return defaultValue
     }
     
-    func loadView(dimension:CGSize) -> UIView? {
+    public func loadView(dimension:CGSize) -> UIView? {
         return self.loadViewInternal(dimension, screenDimention: dimension)
     }
     
     // Returns the list of URLs of required resouces for this element (including children)
-    lazy var resourceURLs:[NSURL:String] = {
+    public lazy var resourceURLs:[NSURL:String] = {
         var urls = [NSURL:String]()
         let baseURL = self.delegate.baseURL()
         for (key, prefix) in ["img":"", "mask":"", "video":".mov", "sprite":""] {
@@ -1039,7 +1039,7 @@ class SwipeElement:NSObject {
 
     // This function is called by SwipePage when unloading the view.
     // PARANOIA: Extra effort to clean up everything
-    func clear() {
+    public func clear() {
         notificationManager.clear()
     }
 
@@ -1069,7 +1069,7 @@ class SwipeElement:NSObject {
         layer?.opacity = 1.0
     }
     
-    func setTimeOffsetTo(offset:CGFloat, fAutoPlay:Bool = false, fElementRepeat:Bool = false) {
+    public func setTimeOffsetTo(offset:CGFloat, fAutoPlay:Bool = false, fElementRepeat:Bool = false) {
         if offset < 0.0 || offset > 1.0 {
             return
         }
@@ -1153,7 +1153,7 @@ class SwipeElement:NSObject {
         }
     }
 */
-    func isVideoElement() -> Bool {
+    public func isVideoElement() -> Bool {
         if self.videoPlayer != nil {
             return true
         }
@@ -1165,7 +1165,7 @@ class SwipeElement:NSObject {
         return false
     }
     
-    func isRepeatElement() -> Bool {
+    public func isRepeatElement() -> Bool {
         if fRepeat {
             return true
         }
@@ -1177,7 +1177,7 @@ class SwipeElement:NSObject {
         return false
     }
 
-    func parseText(info:[String:AnyObject], key:String) -> String? {
+    public func parseText(info:[String:AnyObject], key:String) -> String? {
         guard let value = info[key] else {
             return nil
         }
@@ -1203,7 +1203,7 @@ class SwipeElement:NSObject {
         }
     }
     
-    static func addTextLayer(text:String, scale:CGSize, info:[String:AnyObject], dimension:CGSize, layer:CALayer) {
+    public static func addTextLayer(text:String, scale:CGSize, info:[String:AnyObject], dimension:CGSize, layer:CALayer) {
         var fTextBottom = false
         var fTextTop = false
 

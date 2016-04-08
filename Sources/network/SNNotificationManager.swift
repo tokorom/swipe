@@ -11,19 +11,19 @@ import Cocoa
 import UIKit
 #endif
 
-class SNNotificationManager {
+public class SNNotificationManager {
     var observers = [NSObjectProtocol]()
     
     deinit {
         clear()
     }
     
-    func addObserverForName(name: String?, object obj: AnyObject?, queue: NSOperationQueue?, usingBlock block: (NSNotification!) -> Void) {
+    public func addObserverForName(name: String?, object obj: AnyObject?, queue: NSOperationQueue?, usingBlock block: (NSNotification!) -> Void) {
         let observer = NSNotificationCenter.defaultCenter().addObserverForName(name, object: obj, queue: queue, usingBlock: block)
         observers.append(observer)
     }
     
-    func clear() {
+    public func clear() {
         for observer in observers {
             NSNotificationCenter.defaultCenter().removeObserver(observer)
         }

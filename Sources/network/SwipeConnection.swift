@@ -21,14 +21,14 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
-class SwipeConnection: NSObject {
+public class SwipeConnection: NSObject {
     private static var connections = [NSURL:SwipeConnection]()
-    static let session:NSURLSession = {
+    public static let session:NSURLSession = {
         let config = NSURLSessionConfiguration.defaultSessionConfiguration()
         config.URLCache = nil // disable cache by NSURLSession (because we do)
         return NSURLSession(configuration: config, delegate: nil, delegateQueue: NSOperationQueue.mainQueue())
     }()
-    static func connection(url:NSURL, urlLocal:NSURL, entity:NSManagedObject) -> SwipeConnection {
+    public static func connection(url:NSURL, urlLocal:NSURL, entity:NSManagedObject) -> SwipeConnection {
         if let connection = connections[url] {
             return connection
         }
@@ -78,10 +78,10 @@ class SwipeConnection: NSObject {
         task.resume()
         return connection
     }
-    let url, urlLocal:NSURL
-    let entity:NSManagedObject
-    var callbacks = Array<(NSError!) -> Void>()
-    var fileSize = 0
+    public let url, urlLocal:NSURL
+    public let entity:NSManagedObject
+    public var callbacks = Array<(NSError!) -> Void>()
+    public var fileSize = 0
 
     private init(url:NSURL, urlLocal:NSURL, entity:NSManagedObject) {
         self.url = url
@@ -94,11 +94,11 @@ class SwipeConnection: NSObject {
         //MyLog("SWCon deinit \(url.lastPathComponent)")
     }
 
-    func load(callback:(NSError!) -> Void) {
+    public func load(callback:(NSError!) -> Void) {
         callbacks.append(callback)
     }
 
-    func callbackAll(error: NSError?) {
+    public func callbackAll(error: NSError?) {
         SwipeConnection.connections.removeValueForKey(self.url)
         for callback in callbacks {
             callback(error)

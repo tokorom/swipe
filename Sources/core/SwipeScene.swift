@@ -22,14 +22,14 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
-class SwipeScene: NSObject, AVAudioPlayerDelegate {
+public class SwipeScene: NSObject, AVAudioPlayerDelegate {
     let sceneInfo:[String:AnyObject]
     private let baseURL:NSURL?
     private let name:String
     private var bgmPlayer:AVAudioPlayer?
     private var fDebugEntered = false
 
-    lazy var resourceURLs:[NSURL:String] = {
+    public lazy var resourceURLs:[NSURL:String] = {
         var urls = [NSURL:String]()
         if let value = self.sceneInfo["bgm"] as? String,
                url = NSURL.url(value, baseURL: self.baseURL) {
@@ -38,7 +38,7 @@ class SwipeScene: NSObject, AVAudioPlayerDelegate {
         return urls
     }()
     
-    init(name:String, info:[String:AnyObject], baseURL:NSURL?) {
+    public init(name:String, info:[String:AnyObject], baseURL:NSURL?) {
         self.baseURL = baseURL
         self.name = name
         self.sceneInfo = info
@@ -46,7 +46,7 @@ class SwipeScene: NSObject, AVAudioPlayerDelegate {
     
     // This function is called when a page associated with this scene is activated (entered)
     //  AND the previous page is NOT associated with this scene object.
-    func didEnter(prefetcher:SwipePrefetcher) {
+    public func didEnter(prefetcher:SwipePrefetcher) {
         assert(fDebugEntered == false, "re-entering")
         fDebugEntered = true
         
@@ -70,7 +70,7 @@ class SwipeScene: NSObject, AVAudioPlayerDelegate {
 
     // This function is called when a page associated with this scene is deactivated (leaved)
     //  AND the subsequent page is not associated with this scene object.
-    func didLeave() {
+    public func didLeave() {
         assert(fDebugEntered == true, "leaving without entering")
         fDebugEntered = false
 
@@ -82,7 +82,7 @@ class SwipeScene: NSObject, AVAudioPlayerDelegate {
     }
 
     // We repeat the bgm
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    public func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
         if let player = bgmPlayer {
             if flag {
                 player.play()

@@ -23,9 +23,9 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
-class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocumentViewer {
-    var book:SwipeBook!
-    weak var delegate:SwipeDocumentViewerDelegate?
+public class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocumentViewer {
+    public var book:SwipeBook!
+    public weak var delegate:SwipeDocumentViewerDelegate?
     private var fAdvancing = true
     private let notificationManager = SNNotificationManager()
 #if os(tvOS)
@@ -35,7 +35,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     private var scrollingCount = 0 // number of pending animations
 #endif
 
-    lazy var scrollView:UIScrollView = {
+    public lazy var scrollView:UIScrollView = {
         let scrollView = UIScrollView()
 #if os(iOS)
         scrollView.pagingEnabled = true // paging is not available for tvOS
@@ -77,12 +77,12 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     }
 
     // <SwipeDocumentViewer> method
-    func documentTitle() -> String? {
+    public func documentTitle() -> String? {
         return self.book.title
     }
 
     // <SwipeDocumentViewer> method
-    func loadDocument(document:[String:AnyObject], size:CGSize, url:NSURL?, state:[String:AnyObject]?, callback:(Float, NSError?)->(Void)) throws {
+    public func loadDocument(document:[String:AnyObject], size:CGSize, url:NSURL?, state:[String:AnyObject]?, callback:(Float, NSError?)->(Void)) throws {
         self.book = SwipeBook(bookInfo: document, url: url)
 
         if let languages = self.book.languages(),
@@ -115,42 +115,42 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     }
 
     // <SwipeDocumentViewer> method
-    func setDelegate(delegate:SwipeDocumentViewerDelegate) {
+    public func setDelegate(delegate:SwipeDocumentViewerDelegate) {
         self.delegate = delegate
     }
 
     // <SwipeDocumentViewer> method
-    func hideUI() -> Bool {
+    public func hideUI() -> Bool {
         return true
     }
 
     // <SwipeDocumentViewer> method
-    func landscape() -> Bool {
+    public func landscape() -> Bool {
         return self.book.landscape
     }
     
     // <SwipeDocumentViewer> method
-    func becomeZombie() {
+    public func becomeZombie() {
         notificationManager.clear()
     }
 
     // <SwipeDocumentViewer> method
-    func saveState() -> [String:AnyObject]? {
+    public func saveState() -> [String:AnyObject]? {
         return ["page":self.book.pageIndex, "langId":self.book.langId]
     }
 
     // <SwipeDocumentViewer> method
-    func languages() -> [[String:AnyObject]]? {
+    public func languages() -> [[String:AnyObject]]? {
         return self.book.languages()
     }
     
     // <SwipeDocumentViewer> method
-    func reloadWithLanguageId(langId:String) {
+    public func reloadWithLanguageId(langId:String) {
         self.book.langId = langId
         self.adjustIndex(self.book.pageIndex, fForced: true)
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         self.view.addSubview(self.scrollView)
         
@@ -184,12 +184,12 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     //override weak var preferredFocusedView: UIView? { return self.scrollView }
 #endif
 
-    override func didReceiveMemoryWarning() {
+    public override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         //
@@ -233,7 +233,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
 */
     
     // Debugging only
-    func tagsString() -> String {
+    public func tagsString() -> String {
         let tags = scrollView.subviews.map({ (e:AnyObject) -> String in
             let subview = e as! UIView
             return "\(subview.tag)"
@@ -241,7 +241,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         return "\(tags)"
     }
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
         let pos = self.scrollPos
         let index = Int(pos)
         if index >= 0 {
@@ -282,7 +282,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     }
 
 #if os(iOS)
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         let _:CGFloat, index:Int = self.scrollIndex
         //MyLog("SwipeVCWillBeginDragging, \(self.book.pageIndex) to \(index)")
         if self.adjustIndex(index) {
@@ -290,7 +290,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         }
     }
     
-    func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    public func scrollViewWillEndDragging(scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let pt = targetContentOffset.memory
         let target = Int(pagePosition(pt) + 0.5)
         if target != self.book.pageIndex {
@@ -314,7 +314,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         }
     }
     
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let index = self.scrollIndex
         
         if !self.adjustIndex(index) {
@@ -324,7 +324,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     }
     
 #elseif os(tvOS)
-    func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+    public func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
         let index = self.scrollIndex
         self.scrollingCount--
         MyLog("SWView didEndScrolling \(index), \(scrollingTarget), c=\(scrollingCount)", level: 1)
@@ -352,7 +352,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         self.fAdvancing = false
     }
     
-    func handlePlayButton(recognizer:UITapGestureRecognizer) {
+    public func handlePlayButton(recognizer:UITapGestureRecognizer) {
         let page = self.book.currenPage
         let fPlaying = page.isPlaying()
         MyLog("SWView  handlePlayButton \(fPlaying)", level: 1)
@@ -369,7 +369,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         */
     }
 
-    func handlePan(recognizer:UIPanGestureRecognizer) {
+    public func handlePan(recognizer:UIPanGestureRecognizer) {
         let translation = recognizer.translationInView(self.view)
         let velocity = recognizer.velocityInView(self.view)
         let size = self.scrollView.frame.size
@@ -451,22 +451,22 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         }
     }
     
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         MyLog("SWView  scrollViewWillBeginDragging was called")
     }
-    func scrollViewDidEndDragging(scrollView: UIScrollView,
+    public func scrollViewDidEndDragging(scrollView: UIScrollView,
                         willDecelerate decelerate: Bool) {
         MyLog("SWView  scrollViewDidEndDragging was called")
     }
-    func scrollViewWillBeginDecelerating(scrollView: UIScrollView) {
+    public func scrollViewWillBeginDecelerating(scrollView: UIScrollView) {
         MyLog("SWView  scrollViewWillBeginDecelerating was called")
     }
     
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         MyLog("SWView  scrollViewDidEndDecelerating was called")
     }
     
-    func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
+    public func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
         MyLog("SWView  scrollViewShouldScrollToTop was called")
         return true
     }

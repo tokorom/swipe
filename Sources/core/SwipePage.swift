@@ -23,7 +23,7 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
-protocol SwipePageDelegate: NSObjectProtocol {
+public protocol SwipePageDelegate: NSObjectProtocol {
     func dimension(page:SwipePage) -> CGSize
     func scale(page:SwipePage) -> CGSize
     func prototypeWith(name:String?) -> [String:AnyObject]?
@@ -40,7 +40,7 @@ protocol SwipePageDelegate: NSObjectProtocol {
     func languageIdentifier() -> String?
 }
 
-class SwipePage: NSObject, SwipeElementDelegate {
+public class SwipePage: NSObject, SwipeElementDelegate {
     // Debugging
     static var objectCount = 0
     var accessCount = 0
@@ -52,18 +52,18 @@ class SwipePage: NSObject, SwipeElementDelegate {
     static let shouldPauseAutoPlay = "SwipePageShouldPauseAutoPlay"
 
     // Public properties
-    let index:Int
-    var scene:SwipeScene?
-    var view:UIView?
-    weak var delegate:SwipePageDelegate!
+    public let index:Int
+    public var scene:SwipeScene?
+    public var view:UIView?
+    public weak var delegate:SwipePageDelegate!
     
     // Public Lazy Properties
-    lazy var fixed:Bool = {
+    public lazy var fixed:Bool = {
         let ret = (self.transition != "scroll")
         //NSLog("SWPage  fixed = \(self.transition) \(ret), \(self.index)")
         return self.transition != "scroll"
     }()
-    lazy var replace:Bool = {
+    public lazy var replace:Bool = {
         return self.transition == "replace"
     }()
 
@@ -87,7 +87,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
     private var aniLayer:CALayer?
     private var audioPlayer:AVAudioPlayer?
     
-    init(index:Int, pageInfo:[String:AnyObject], delegate:SwipePageDelegate) {
+    public init(index:Int, pageInfo:[String:AnyObject], delegate:SwipePageDelegate) {
         self.index = index
         self.delegate = delegate
         self.scene = delegate.sceneWith(pageInfo["scene"] as? String)
@@ -95,7 +95,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
         SwipePage.objectCount += 1
     }
 
-    func unloadView() {
+    public func unloadView() {
         if let view = self.view {
             MyLog("SWPage  unloading @\(index)", level: 2)
             view.removeFromSuperview()
@@ -121,7 +121,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
         SwipePage.objectCount -= 1
     }
 
-    static func checkMemoryLeak() {
+    public static func checkMemoryLeak() {
         //assert(SwipePage.objectCount == 0)
         if SwipePage.objectCount > 0 {
             NSLog("SWPage  memory leak detected ###")
@@ -201,7 +201,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
         return false
     }()
     
-    func setTimeOffsetWhileDragging(offset:CGFloat) {
+    public func setTimeOffsetWhileDragging(offset:CGFloat) {
         if self.scroll {
             fEntered = false // stops the element animation
             CATransaction.begin()
@@ -216,7 +216,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
         }
     }
     
-    func willLeave(fAdvancing:Bool) {
+    public func willLeave(fAdvancing:Bool) {
 #if !os(OSX)
         if let _ = self.utterance {
             delegate.stopSpeaking()
@@ -225,7 +225,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
 #endif
     }
     
-    func pause(fForceRewind:Bool) {
+    public func pause(fForceRewind:Bool) {
         fPausing = true
         if let player = self.audioPlayer {
             player.stop()
@@ -238,13 +238,13 @@ class SwipePage: NSObject, SwipeElementDelegate {
         }
     }
     
-    func didLeave(fGoingBack:Bool) {
+    public func didLeave(fGoingBack:Bool) {
         fEntered = false
         self.pause(fGoingBack)
         MyLog("SWPage  didLeave @\(index) \(fGoingBack)", level: 2)
     }
     
-    func willEnter(fForward:Bool) {
+    public func willEnter(fForward:Bool) {
         MyLog("SWPage  willEnter @\(index) \(fForward)", level: 2)
         if self.autoplay && fForward || self.always {
             prepareToPlay()
@@ -269,7 +269,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
 #endif
     }
 
-    func didEnter(fForward:Bool) {
+    public func didEnter(fForward:Bool) {
         fEntered = true
         accessCount += 1
         if fForward && self.autoplay || self.always || self.fRepeat {
@@ -280,7 +280,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
         MyLog("SWPage  didEnter @\(index) \(fForward)", level: 2)
     }
     
-    func prepare() {
+    public func prepare() {
         if scroll {
             prepareToPlay(index > self.delegate.currentPageIndex())
         } else {
@@ -301,7 +301,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
         self.offsetPaused = nil
     }
     
-    func play() {
+    public func play() {
         // REVIEW: Remove this block once we detect the end of speech
         if let _ = self.utterance {
             delegate.stopSpeaking()
@@ -372,7 +372,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
     }
     
     // Returns the list of URLs of required resouces for this element (including children)
-    lazy var resourceURLs:[NSURL:String] = {
+    public lazy var resourceURLs:[NSURL:String] = {
         var urls = [NSURL:String]()
         let baseURL = self.delegate.baseURL()
         for key in ["audio"] {
@@ -399,11 +399,11 @@ class SwipePage: NSObject, SwipeElementDelegate {
         return urls
     }()
     
-    lazy var prefetcher:SwipePrefetcher = {
+    public lazy var prefetcher:SwipePrefetcher = {
         return SwipePrefetcher(urls:self.resourceURLs)
     }()
 
-    func loadView(callback:((Void)->(Void))?) -> UIView {
+    public func loadView(callback:((Void)->(Void))?) -> UIView {
     
         MyLog("SWPage  loading @\(index)", level: 2)
         assert(self.view == nil, "loadView self.view must be nil")
@@ -540,22 +540,22 @@ class SwipePage: NSObject, SwipeElementDelegate {
     }
     
     // <SwipeElementDelegate> method
-    func prototypeWith(name:String?) -> [String:AnyObject]? {
+    public func prototypeWith(name:String?) -> [String:AnyObject]? {
         return delegate.prototypeWith(name)
     }
     
     // <SwipeElementDelegate> method
-    func pathWith(name:String?) -> AnyObject? {
+    public func pathWith(name:String?) -> AnyObject? {
         return delegate.pathWith(name)
     }
 
     // <SwipeElementDelegate> method
-    func shouldRepeat(element:SwipeElement) -> Bool {
+    public func shouldRepeat(element:SwipeElement) -> Bool {
         return fEntered && self.fRepeat
     }
     
     // <SwipeElementDelegate> method
-    func onAction(element:SwipeElement) {
+    public func onAction(element:SwipeElement) {
         if let action = element.action {
             MyLog("SWPage  onAction \(action)", level: 2)
             if action == "play" {
@@ -567,12 +567,12 @@ class SwipePage: NSObject, SwipeElementDelegate {
     }
     
     // <SwipeElementDelegate> method
-    func didStartPlaying(element:SwipeElement) {
+    public func didStartPlaying(element:SwipeElement) {
         didStartPlayingInternal()
     }
     
     // <SwipeElementDelegate> method
-    func didFinishPlaying(element:SwipeElement, completed:Bool) {
+    public func didFinishPlaying(element:SwipeElement, completed:Bool) {
         if completed {
             completionCount += 1
         }
@@ -580,17 +580,17 @@ class SwipePage: NSObject, SwipeElementDelegate {
     }
 
     // <SwipeElementDelegate> method
-    func baseURL() -> NSURL? {
+    public func baseURL() -> NSURL? {
         return delegate.baseURL()
     }
     
     // <SwipeElementDelegate> method
-    func pageIndex() -> Int {
+    public func pageIndex() -> Int {
         return index
     }
 
     // <SwipeElementDelegate> method
-    func localizedStringForKey(key:String) -> String? {
+    public func localizedStringForKey(key:String) -> String? {
         if let strings = pageInfo["strings"] as? [String:AnyObject],
                texts = strings[key] as? [String:AnyObject] {
             return SwipeParser.localizedString(texts, langId: delegate.languageIdentifier())
@@ -599,11 +599,11 @@ class SwipePage: NSObject, SwipeElementDelegate {
     }
 
     // <SwipeElementDelegate> method
-    func languageIdentifier() -> String? {
+    public func languageIdentifier() -> String? {
         return delegate.languageIdentifier()
     }
 
-    func parseText(info:[String:AnyObject], key:String) -> String? {
+    public func parseText(info:[String:AnyObject], key:String) -> String? {
         guard let value = info[key] else {
             return nil
         }
@@ -635,20 +635,20 @@ class SwipePage: NSObject, SwipeElementDelegate {
     }
 
 #if !os(OSX)
-    func speak(utterance:AVSpeechUtterance) {
+    public func speak(utterance:AVSpeechUtterance) {
         delegate.speak(utterance)
     }
 #endif
 
-    func parseMarkdown(element:SwipeElement, markdowns:[String]) -> NSAttributedString {
+    public func parseMarkdown(element:SwipeElement, markdowns:[String]) -> NSAttributedString {
         return self.delegate.parseMarkdown(markdowns)
     }
     
-    func map(url:NSURL) -> NSURL? {
+    public func map(url:NSURL) -> NSURL? {
         return self.prefetcher.map(url)
     }
 
-    func isPlaying() -> Bool {
+    public func isPlaying() -> Bool {
         let fPlaying = cPlaying > 0
         //assert(fPlaying == self.isPlayingOld())
         return fPlaying
@@ -664,7 +664,7 @@ class SwipePage: NSObject, SwipeElementDelegate {
         return false
     }
     */
-    func hasRepeatElement() -> Bool {
+    public func hasRepeatElement() -> Bool {
         for element in elements {
             if element.isRepeatElement() {
                 return true

@@ -22,7 +22,7 @@ private func MyLog(text:String, level:Int = 0) {
 //
 // SwipeTableViewController is the "viewer" of documents with type "net.swipe.list"
 //
-class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SwipeDocumentViewer {
+public class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SwipeDocumentViewer {
     private var document:[String:AnyObject]?
     private var sections = [[String:AnyObject]]()
     //private var items = [[String:AnyObject]]()
@@ -54,7 +54,7 @@ class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }()
         
     // <SwipeDocumentViewer> method
-    func loadDocument(document:[String:AnyObject], size:CGSize, url:NSURL?, state:[String:AnyObject]?, callback:(Float, NSError?)->(Void)) throws {
+    public func loadDocument(document:[String:AnyObject], size:CGSize, url:NSURL?, state:[String:AnyObject]?, callback:(Float, NSError?)->(Void)) throws {
         self.document = document
         self.url = url
         if let sections = document["sections"] as? [[String:AnyObject]] {
@@ -68,7 +68,7 @@ class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableVi
         callback(1.0, nil)
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         if let imageView = self.imageView {
@@ -87,7 +87,7 @@ class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
 
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         let size = self.tableView.bounds.size
@@ -99,58 +99,58 @@ class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     // <SwipeDocumentViewer> method
-    func documentTitle() -> String? {
+    public func documentTitle() -> String? {
         return document?["title"] as? String
     }
     
     // <SwipeDocumentViewer> method
-    func setDelegate(delegate:SwipeDocumentViewerDelegate) {
+    public func setDelegate(delegate:SwipeDocumentViewerDelegate) {
         self.delegate = delegate
     }
     
     // <SwipeDocumentViewer> method
-    func hideUI() -> Bool {
+    public func hideUI() -> Bool {
         return false
     }
 
     // <SwipeDocumentViewer> method
-    func landscape() -> Bool {
+    public func landscape() -> Bool {
         return false
     }
 
     // <SwipeDocumentViewer> method
-    func becomeZombie() {
+    public func becomeZombie() {
         // no op
     }
 
     // <SwipeDocumentViewer> method
-    func saveState() -> [String:AnyObject]? {
+    public func saveState() -> [String:AnyObject]? {
         return nil
     }
 
     // <SwipeDocumentViewer> method
-    func languages() -> [[String:AnyObject]]? {
+    public func languages() -> [[String:AnyObject]]? {
         return nil
     }
     
     // <SwipeDocumentViewer> method
-    func reloadWithLanguageId(langID:String) {
+    public func reloadWithLanguageId(langID:String) {
         // no operation for this case
     }
 
-    override func didReceiveMemoryWarning() {
+    public override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
     // MARK: - Table view data source
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return prefetching ? 0 : self.sections.count
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         let section = self.sections[section]
         guard let items = section["items"] as? [[String:AnyObject]] else {
@@ -159,7 +159,7 @@ class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableVi
         return items.count
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "foo")
 
         // Configure the cell...
@@ -183,7 +183,7 @@ class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let section = self.sections[indexPath.section]
         guard let items = section["items"] as? [[String:AnyObject]] else {
             return
@@ -195,7 +195,7 @@ class SwipeTableViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let section = self.sections[section]
         return section["title"] as? String
     }

@@ -12,12 +12,12 @@ import Cocoa
 import UIKit
 #endif
 
-class SwipePath {
+public class SwipePath {
 
     private static let regexSVG = try! NSRegularExpression(pattern: "[a-z][0-9\\-\\.,\\s]*", options: NSRegularExpressionOptions.CaseInsensitive)
     private static let regexNUM = try! NSRegularExpression(pattern: "[\\-]*[0-9\\.]+", options: NSRegularExpressionOptions())
     
-    static func parse(shape:AnyObject?, w:CGFloat, h:CGFloat, scale:CGSize) -> CGPathRef? {
+    public static func parse(shape:AnyObject?, w:CGFloat, h:CGFloat, scale:CGSize) -> CGPathRef? {
         if let string = shape as? String {
             if string == "ellipse" {
                 return CGPathCreateWithEllipseInRect(CGRectMake(0, 0, w * scale.width, h * scale.height), nil)

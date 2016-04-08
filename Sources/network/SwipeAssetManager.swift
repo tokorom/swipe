@@ -22,29 +22,29 @@ private func MyLog(text:String, level:Int = 0) {
 }
 
 
-class SwipeAssetManager {
+public class SwipeAssetManager {
     static let instance = SwipeAssetManager()
     
-    static func sharedInstance() -> SwipeAssetManager {
+    public static func sharedInstance() -> SwipeAssetManager {
         return SwipeAssetManager.instance
     }
 
-    lazy var applicationCachesDirectory: NSURL = {
+    public lazy var applicationCachesDirectory: NSURL = {
         let urls = NSFileManager.defaultManager().URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask)
         return urls[urls.count-1]
     }()
 
-    lazy var applicationDocumentsDirectory: NSURL = {
+    public lazy var applicationDocumentsDirectory: NSURL = {
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
         return urls[urls.count-1]
     }()
 
-    lazy var applicationLibraryDirectory: NSURL = {
+    public lazy var applicationLibraryDirectory: NSURL = {
         let urls = NSFileManager.defaultManager().URLsForDirectory(.LibraryDirectory, inDomains: .UserDomainMask)
         return urls[urls.count-1]
     }()
 
-    lazy var urlFolder:NSURL = {
+    public lazy var urlFolder:NSURL = {
         let urlFolder = self.applicationCachesDirectory.URLByAppendingPathComponent("cache.swipe.net")
         let fm = NSFileManager.defaultManager()
         if !fm.fileExistsAtPath(urlFolder.path!) {
@@ -54,13 +54,13 @@ class SwipeAssetManager {
         return urlFolder
     }()
     
-    lazy var managedObjectModel: NSManagedObjectModel = {
+    public lazy var managedObjectModel: NSManagedObjectModel = {
         let modelURL = NSBundle.mainBundle().URLForResource("asset", withExtension: "momd")!
         //let modelURL = NSBundle.mainBundle().URLForResource("snasset", withExtension: "momd")!
         return NSManagedObjectModel(contentsOfURL: modelURL)!
     }()
 
-    lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+    public lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         let filename = "asset004.sqlite"
 #if os(tvOS)
@@ -88,14 +88,14 @@ class SwipeAssetManager {
         return coordinator
     }()
 
-    lazy var managedObjectContext: NSManagedObjectContext = {
+    public lazy var managedObjectContext: NSManagedObjectContext = {
         let coordinator = self.persistentStoreCoordinator
         var managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = coordinator
         return managedObjectContext
     }()
 
-    func saveContext () {
+    public func saveContext () {
         if managedObjectContext.hasChanges {
             do {
                 try managedObjectContext.save()
@@ -109,7 +109,7 @@ class SwipeAssetManager {
         }
     }
 
-    func loadAsset(url:NSURL, prefix:String, bypassCache:Bool, callback:((NSURL?, NSError!) -> Void)?) {
+    public func loadAsset(url:NSURL, prefix:String, bypassCache:Bool, callback:((NSURL?, NSError!) -> Void)?) {
         assert(NSThread.currentThread() == NSThread.mainThread(), "thread error")
         
         if url.scheme == "file" {
@@ -170,12 +170,12 @@ class SwipeAssetManager {
         }
     }
     
-    func wasFileLoaded(connection:SwipeConnection) {
+    public func wasFileLoaded(connection:SwipeConnection) {
         connection.entity.setValue(connection.fileSize, forKey: "size")
         saveContext()
     }
 
-    func reduce(limit:Int, amount:Int) {
+    public func reduce(limit:Int, amount:Int) {
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
             let fm = NSFileManager.defaultManager()
             let request = NSFetchRequest(entityName: "Asset")
@@ -205,7 +205,7 @@ class SwipeAssetManager {
         }
     }
     
-    func flush() {
+    public func flush() {
         let fm = NSFileManager.defaultManager()
         do {
             let urls = try fm.contentsOfDirectoryAtURL(urlFolder, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions())

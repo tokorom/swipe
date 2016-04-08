@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SwipeTableViewController" customModule="swipe_iOS" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SwipeTableViewController" customModule="Swipe" customModuleProvider="target">
             <connections>
                 <outlet property="imageView" destination="PQg-m9-GXz" id="1zv-56-8CU"/>
                 <outlet property="tableView" destination="36I-q2-KRG" id="4JM-Df-ads"/>

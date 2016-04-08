@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F34467211CB62A2700106CDB"
-               BuildableName = "swipe.framework"
-               BlueprintName = "swipe-iOS"
+               BuildableName = "Swipe.framework"
+               BlueprintName = "Swipe"
                ReferencedContainer = "container:swipe.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,8 +46,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F34467211CB62A2700106CDB"
-            BuildableName = "swipe.framework"
-            BlueprintName = "swipe-iOS"
+            BuildableName = "Swipe.framework"
+            BlueprintName = "Swipe"
             ReferencedContainer = "container:swipe.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,8 +64,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F34467211CB62A2700106CDB"
-            BuildableName = "swipe.framework"
-            BlueprintName = "swipe-iOS"
+            BuildableName = "Swipe.framework"
+            BlueprintName = "Swipe"
             ReferencedContainer = "container:swipe.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

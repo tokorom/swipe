@@ -1,6 +1,6 @@
 //
-//  swipe.h
-//  swipe
+//  Swipe.h
+//  Swipe
 //
 //  Created by tokorom on 4/7/16.
 //  Copyright © 2016 Swipe, Inc. All rights reserved.

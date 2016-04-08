@@ -23,12 +23,14 @@ private func MyLog(text:String, level:Int = 0) {
     }
 }
 
+private let bundle = NSBundle(identifier: "net.swipe.engine")
+
 //
 // This is the place you can add more document types. 
 // Those UIViewControllers MUST support SwipeDocumentViewer protocol.
 //
 let g_typeMapping:[String:Void -> UIViewController] = [
-    "net.swipe.list": { return SwipeTableViewController(nibName:"SwipeTableViewController", bundle:nil) },
+    "net.swipe.list": { return SwipeTableViewController(nibName:"SwipeTableViewController", bundle:bundle) },
     "net.swipe.swipe": { return SwipeViewController() },
 ]
 
@@ -62,7 +64,7 @@ public class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
 
     public func browseTo(url:NSURL) {
 #if os(iOS)
-        let browser = SwipeBrowser(nibName: "SwipeBrowser", bundle: nil)
+        let browser = SwipeBrowser(nibName: "SwipeBrowser", bundle: bundle)
 #else
         let browser = SwipeBrowser()
 #endif

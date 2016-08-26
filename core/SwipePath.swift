@@ -85,6 +85,26 @@ class SwipePath {
                             pt.y = p[i+5]
                             i += 6
                         }
+                    case "q":
+                        var i = 0
+                        while(p.count >= i+4) {
+                            path.addQuadCurve(nil, cpx: pt.x+p[i], cpy: pt.y+p[i+1], endingAtX: pt.x+p[i+2], y: pt.y+p[i+3])
+                            cp.x = pt.x+p[i]
+                            cp.y = pt.y+p[i+1]
+                            pt.x += p[i+2]
+                            pt.y += p[i+3]
+                            i += 4
+                        }
+                    case "Q":
+                        var i = 0
+                        while(p.count >= i+4) {
+                            path.addQuadCurve(nil, cpx: p[i], cpy: p[i+1], endingAtX: p[i+2], y: p[i+3])
+                            cp.x = p[i]
+                            cp.y = p[i+1]
+                            pt.x = p[i+2]
+                            pt.y = p[i+3]
+                            i += 4
+                        }
                     case "s":
                         var i = 0
                         while(p.count >= i+4) {
@@ -150,7 +170,7 @@ class SwipePath {
                             i += 1
                         }
                     default:
-                        NSLog("SwipeElement ### unkwnown \(cmd)")
+                        NSLog("SwipeElement ### unknown \(cmd)")
                         break;
                     }
                 }

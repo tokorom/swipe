@@ -61,6 +61,7 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     var controller:UIViewController?
     var documentViewer:SwipeDocumentViewer?
     var ignoreViewState = false
+    weak var delegate:SwipeBrowserDelegate?
 
     func browseTo(_ url:URL) {
         let browser = SwipeBrowser(nibName: "SwipeBrowser", bundle: nil)
@@ -99,6 +100,13 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         btnExport?.isEnabled = false
         slider.isHidden = true
 #endif
+
+        if let toolbar = toolbar {
+            delegate?.toolbarDidLoad(browser: self, toolbar: toolbar)
+        }
+        if let bottombar = bottombar {
+            delegate?.bottombarDidLoad(browser: self, bottombar: bottombar)
+        }
 
         if let document = self.jsonDocument {
             self.openDocument(document, localResource: true)
@@ -391,7 +399,7 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         self.presentingViewController!.dismiss(animated: true, completion: nil)
 #endif
     }
-    
+
     func becomeZombie() {
         if let documentViewer = self.documentViewer {
             documentViewer.becomeZombie()
@@ -446,5 +454,12 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         }
     }
 
+    func documentDidEnd() {
+        showUI()
+    }
+}
 
+protocol SwipeBrowserDelegate: NSObjectProtocol {
+    func toolbarDidLoad(browser: SwipeBrowser, toolbar: UIView)
+    func bottombarDidLoad(browser: SwipeBrowser, bottombar: UIView)
 }

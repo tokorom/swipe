@@ -28,6 +28,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     weak var delegate:SwipeDocumentViewerDelegate?
     private var fAdvancing = true
     private let notificationManager = SNNotificationManager()
+    private var detectedTerminate = false
 #if os(tvOS)
     // scrollingTarget has an index to the target page during the scrolling animation
     // as the result of swiping
@@ -284,6 +285,12 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
                 }
             }
         }
+
+        let remainingDistance = scrollView.contentSize.height - scrollView.contentOffset.y - scrollView.frame.height
+        let margin: CGFloat = 30
+        if remainingDistance < -margin {
+            self.detectedTerminate = true
+        }
     }
 
 #if os(iOS)
@@ -324,8 +331,12 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         
         if !self.adjustIndex(index) {
             MyLog("SWView didEndDecelerating same", level: 1)
+            if self.detectedTerminate {
+                self.delegate?.documentDidEnd()
+            }
         }
         self.fAdvancing = false
+        self.detectedTerminate = false
     }
     
 #elseif os(tvOS)

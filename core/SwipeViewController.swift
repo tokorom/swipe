@@ -324,6 +324,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         
         if !self.adjustIndex(index) {
             MyLog("SWView didEndDecelerating same", level: 1)
+            delegate?.documentDidEnd()
         }
         self.fAdvancing = false
     }

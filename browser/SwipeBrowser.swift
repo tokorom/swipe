@@ -61,6 +61,7 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     var controller:UIViewController?
     var documentViewer:SwipeDocumentViewer?
     var ignoreViewState = false
+    weak var delegate:SwipeBrowserDelegate?
 
     func browseTo(_ url:URL) {
         let browser = SwipeBrowser(nibName: "SwipeBrowser", bundle: nil)
@@ -385,10 +386,14 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     }
 
     @IBAction func close(_ sender:AnyObject) {
+        close()
+    }
+
+    func close(completion: (() -> Void)? = nil) {
 #if os(OSX)
         self.presentingViewController!.dismissViewController(self)
 #else
-        self.presentingViewController!.dismiss(animated: true, completion: nil)
+        self.presentingViewController!.dismiss(animated: true, completion: completion)
 #endif
     }
     
@@ -446,5 +451,13 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         }
     }
 
+    func documentDidEnd() {
+        close() { [unowned self] in
+            self.delegate?.browserDidClose(browser: self)
+        }
+    }
+}
 
+protocol SwipeBrowserDelegate: NSObjectProtocol {
+    func browserDidClose(browser: SwipeBrowser)
 }

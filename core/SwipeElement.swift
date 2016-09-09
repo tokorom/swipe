@@ -31,8 +31,8 @@ private func MyLog(_ text:String, level:Int = 0) {
 // which calls init(layer: AnyObject) to create a copy before the rendering. 
 // We can work-around this bug by calling super.init().
 class XAVPlayerLayer: AVPlayerLayer {
-    override init(layer: AnyObject) {
-        print("XAVPlayerLayer init with layer")
+    override init(layer: Any) {
+        //print("XAVPlayerLayer init with layer")
         super.init() // HACK to avoid crash
     }
     init(player: AVPlayer) {
@@ -57,7 +57,7 @@ protocol SwipeElementDelegate:NSObjectProtocol {
     func parseMarkdown(_ element:SwipeElement, markdowns:[String]) -> NSAttributedString
     func baseURL() -> URL?
     func map(_ url:URL) -> URL?
-    func addedResourceURLs(_ urls:[URL:String], callback:() -> Void)
+    func addedResourceURLs(_ urls:[URL:String], callback:@escaping () -> Void)
     func pageIndex() -> Int // for debugging
     func localizedStringForKey(_ key:String) -> String?
     func languageIdentifier() -> String?
@@ -264,9 +264,9 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
             //imageSrc = SwipeParser.imageSourceWith(src)
             if let url = URL.url(src, baseURL: baseURL) {
                 if let urlLocal = self.delegate.map(url) {
-                    imageSrc = CGImageSourceCreateWithURL(urlLocal, nil)
+                    imageSrc = CGImageSourceCreateWithURL(urlLocal as CFURL, nil)
                 } else {
-                    imageSrc = CGImageSourceCreateWithURL(url, nil)
+                    imageSrc = CGImageSourceCreateWithURL(url as CFURL, nil)
                 }
                 if imageSrc != nil && CGImageSourceGetCount(imageSrc!) > 0 {
                     imageRef = CGImageSourceCreateImageAtIndex(imageSrc!, 0, nil)
@@ -278,7 +278,7 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
             //maskSrc = SwipeParser.imageWith(src)
             if let url = URL.url(src, baseURL: baseURL),
                 let urlLocal = self.delegate.map(url),
-                let image = CGImageSourceCreateWithURL(urlLocal, nil) {
+                let image = CGImageSourceCreateWithURL(urlLocal as CFURL, nil) {
                 if CGImageSourceGetCount(image) > 0 {
                     maskSrc = CGImageSourceCreateImageAtIndex(image, 0, nil)
                 }
@@ -321,39 +321,41 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
             }
         }
         
-        if let value = info["x"] as? CGFloat {
-            x = value
-        } else if let value = info["x"] as? String {
-            if value == "right" {
-                x = dimension.width - w0
-            } else if value == "left" {
-                x = 0
-            } else if value == "center" {
-                x = (dimension.width - w0) / 2.0
-            } else {
-                x = SwipeParser.parsePercent(value, full: dimension.width, defaultValue: 0)
-            }
-        }
-        if let value = info["y"] as? CGFloat {
-            y = value
-        } else if let value = info["y"] as? String {
-            if value == "bottom" {
-                y = dimension.height - h0
-            } else if value == "top" {
-                y = 0
-            } else if value == "center" {
-                y = (dimension.height - h0) / 2.0
-            } else {
-                y = SwipeParser.parsePercent(value, full: dimension.height, defaultValue: 0)
-            }
-        }
-        //NSLog("SWEleme \(x),\(y),\(w0),\(h0),\(sizeContents),\(dimension),\(scale)")
-        
-        x *= scale.width
-        y *= scale.height
         let w = w0 * scale.width
         let h = h0 * scale.height
-        let frame = CGRect(x: x, y: y, width: w, height: h)
+        let frame:CGRect = {
+            if let value = info["x"] as? CGFloat {
+                x = value
+            } else if let value = info["x"] as? String {
+                if value == "right" {
+                    x = dimension.width - w0
+                } else if value == "left" {
+                    x = 0
+                } else if value == "center" {
+                    x = (dimension.width - w0) / 2.0
+                } else {
+                    x = SwipeParser.parsePercent(value, full: dimension.width, defaultValue: 0)
+                }
+            }
+            if let value = info["y"] as? CGFloat {
+                y = value
+            } else if let value = info["y"] as? String {
+                if value == "bottom" {
+                    y = dimension.height - h0
+                } else if value == "top" {
+                    y = 0
+                } else if value == "center" {
+                    y = (dimension.height - h0) / 2.0
+                } else {
+                    y = SwipeParser.parsePercent(value, full: dimension.height, defaultValue: 0)
+                }
+            }
+            //NSLog("SWEleme \(x),\(y),\(w0),\(h0),\(sizeContents),\(dimension),\(scale)")
+            
+            x *= scale.width
+            y *= scale.height
+            return CGRect(x: x, y: y, width: w, height: h)
+        }()
         
         let view = InternalView(wrapper: self, frame: frame)
 #if os(OSX)
@@ -513,7 +515,7 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
             }
             if let url = URL.url(src, baseURL: baseURL),
                 let urlLocal = self.delegate.map(url),
-                let imageSource = CGImageSourceCreateWithURL(urlLocal, nil), CGImageSourceGetCount(imageSource) > 0,
+                let imageSource = CGImageSourceCreateWithURL(urlLocal as CFURL, nil), CGImageSourceGetCount(imageSource) > 0,
                 let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil) {
                 let imageLayer = CALayer()
                 imageLayer.contentsScale = contentScale
@@ -611,7 +613,7 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
             SwipeElement.processShadow(info, scale:scale, layer: layer)
         }
         
-        var mds = info["markdown"]
+        var mds: Any? = info["markdown"]
         if let md = mds as? String {
             mds = [md]
         }
@@ -843,7 +845,7 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
                 for src in srcs {
                     if let url = URL.url(src, baseURL: baseURL),
                         let urlLocal = self.delegate.map(url),
-                        let image = CGImageSourceCreateWithURL(urlLocal, nil) {
+                        let image = CGImageSourceCreateWithURL(urlLocal as CFURL, nil) {
                         if CGImageSourceGetCount(image) > 0 {
                             images.append(CGImageSourceCreateImageAtIndex(image, 0, nil)!)
                         }
@@ -1330,15 +1332,15 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
 
         let fontSize: CGFloat = {
             let defaultSize = 20.0 / 480.0 * dimension.height
-            let size = SwipeParser.parseFontSize(info, full: dimension.height, defaultValue: defaultSize, markdown: false)
+            let size = SwipeParser.parseFontSize(info as AnyObject?, full: dimension.height, defaultValue: defaultSize, markdown: false)
             return round(size * scale.height)
         }()
-        let fontNames = SwipeParser.parseFontName(info, markdown: false)
+        let fontNames = SwipeParser.parseFontName(info as AnyObject?, markdown: false)
         func createFont() -> CTFont {
             for fontName in fontNames {
-                return CTFontCreateWithName(fontName, fontSize, nil)
+                return CTFontCreateWithName(fontName as CFString?, fontSize, nil)
             }
-            return CTFontCreateWithName("Helvetica", fontSize, nil)
+            return CTFontCreateWithName("Helvetica" as CFString?, fontSize, nil)
         }
         let font:CTFont = createFont()
         let attr:[String:AnyObject] = [
@@ -1443,22 +1445,22 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
         switch (property) {
         case "text":
             if let string = self.textLayer?.string as? String {
-                return string
+                return string as AnyObject?
             } else {
                 MyLog("SWElem textLayer.string is not a String!")
                 return nil
             }
         case "text.length":
             if let string = self.textLayer?.string as? String {
-                return string.characters.count
+                return string.characters.count as AnyObject?
             } else {
                 MyLog("SWElem textLayer.string is not a String!")
                 return nil
             }
         case "enabled":
-            return self.fEnabled
+            return self.fEnabled as AnyObject?
         case "focusable":
-            return self.fFocusable
+            return self.fFocusable as AnyObject?
         default:
             return super.getPropertyValue(originator, property: property)
         }
@@ -1733,7 +1735,7 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
             
                     self.delegate.addedResourceURLs(urls) {
                         if let urlLocal = self.delegate.map(urls.first!.0),
-                            let image = CGImageSourceCreateWithURL(urlLocal, nil) {
+                            let image = CGImageSourceCreateWithURL(urlLocal as CFURL, nil) {
                             if CGImageSourceGetCount(image) > 0 {
                                 self.imageLayer!.contents = CGImageSourceCreateImageAtIndex(image, 0, nil)!
                             }
@@ -1988,7 +1990,7 @@ class SwipeElement: SwipeView, SwipeViewDelegate {
     }
     
     // SwipeViewDelegate
-    func addedResourceURLs(_ urls:[URL:String], callback:() -> Void) {
+    func addedResourceURLs(_ urls:[URL:String], callback:@escaping () -> Void) {
         for (url,prefix) in urls {
             self.resourceURLs[url as URL] = prefix
         }

@@ -88,7 +88,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     }
 
     // <SwipeDocumentViewer> method
-    func loadDocument(_ document:[String:AnyObject], size:CGSize, url:URL?, state:[String:AnyObject]?, callback:(Float, NSError?)->(Void)) throws {
+    func loadDocument(_ document:[String:AnyObject], size:CGSize, url:URL?, state:[String:AnyObject]?, callback:@escaping (Float, NSError?)->(Void)) throws {
         self.book = SwipeBook(bookInfo: document, url: url, delegate: self)
 
         if let languages = self.book.languages(),
@@ -142,7 +142,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
 
     // <SwipeDocumentViewer> method
     func saveState() -> [String:AnyObject]? {
-        return ["page":self.book.pageIndex, "langId":self.book.langId]
+        return ["page":self.book.pageIndex as AnyObject, "langId":self.book.langId as AnyObject]
     }
 
     // <SwipeDocumentViewer> method

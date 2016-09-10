@@ -511,7 +511,7 @@ class SwipePage: SwipeView, SwipeElementDelegate {
     
 #if !os(tvOS)
     func keyboardWillShow(notification: NSNotification) {
-        if let info:NSDictionary = notification.userInfo {
+        if let info:NSDictionary = notification.userInfo as NSDictionary? {
             if let kbFrame = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
                 if let fr = findFirstResponder() {
                     let frFrame = fr.view!.frame
@@ -526,7 +526,7 @@ class SwipePage: SwipeView, SwipeElementDelegate {
     }
     
     func keyboardWillHide(notification: NSNotification) {
-        if let _:NSDictionary = notification.userInfo {
+        if let _:NSDictionary = notification.userInfo as NSDictionary? {
             if findFirstResponder() != nil {
                 let myFrame = self.view!.frame
                 //let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber as NSTimeInterval
@@ -619,7 +619,7 @@ class SwipePage: SwipeView, SwipeElementDelegate {
     
     // <SwipeElementDelegate> method
     
-    func addedResourceURLs(_ urls:[URL:String], callback:() -> Void) {
+    func addedResourceURLs(_ urls:[URL:String], callback:@escaping () -> Void) {
         self.prefetcher.append(urls) { (completed:Bool, _:[URL], _:[NSError]) -> Void in
             if completed {
                 callback()

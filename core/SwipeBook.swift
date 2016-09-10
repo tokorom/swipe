@@ -153,7 +153,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
     
     lazy var backgroundColor:CGColor = {
         if let value = self.bookInfo["bc"] as? String {
-            return SwipeParser.parseColor(value)
+            return SwipeParser.parseColor(value as AnyObject?)
         }
         return UIColor.black.cgColor
     }()
@@ -251,7 +251,7 @@ class SwipeBook: NSObject, SwipePageDelegate {
     // <SwipePageDelegate> method
     func pathWith(_ name:String?) -> AnyObject? {
         if let key = name,
-           let value:AnyObject = self.namedPaths[key] {
+           let value:AnyObject = self.namedPaths[key as NSObject] {
             return value
         }
         return nil

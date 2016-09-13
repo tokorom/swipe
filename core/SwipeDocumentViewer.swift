@@ -16,6 +16,7 @@ protocol SwipeDocumentViewerDelegate: NSObjectProtocol {
     func browseTo(_ url:URL)
     func tapped()
     func documentDidEnd()
+    func pageDidAdvance(to index: Int)
 }
 
 protocol SwipeDocumentViewer {

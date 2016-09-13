@@ -29,6 +29,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     private var fAdvancing = true
     private let notificationManager = SNNotificationManager()
     private var detectedTerminate = false
+    private var beforePageIndex = -1
 #if os(tvOS)
     // scrollingTarget has an index to the target page during the scrolling animation
     // as the result of swiping
@@ -296,6 +297,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
 #if os(iOS)
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         let _:CGFloat, index:Int = self.scrollIndex
+        self.beforePageIndex = index
         //MyLog("SwipeVCWillBeginDragging, \(self.book.pageIndex) to \(index)")
         if self.adjustIndex(index) {
             MyLog("SWView detected continuous scrolling to @\(self.book.pageIndex)")
@@ -329,6 +331,11 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let index = self.scrollIndex
         
+        if self.beforePageIndex < index {
+            self.delegate?.pageDidAdvance(to: index)
+        }
+        self.beforePageIndex = index
+
         if !self.adjustIndex(index) {
             MyLog("SWView didEndDecelerating same", level: 1)
             if self.detectedTerminate {

@@ -454,12 +454,17 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         }
     }
 
+    func pageDidAdvance(to index: Int) {
+        delegate?.pageDidAdvance(browser: self, to: index)
+    }
+
     func documentDidEnd() {
         showUI()
     }
 }
 
 protocol SwipeBrowserDelegate: NSObjectProtocol {
+    func pageDidAdvance(browser: SwipeBrowser, to index: Int)
     func toolbarDidLoad(browser: SwipeBrowser, toolbar: UIView)
     func bottombarDidLoad(browser: SwipeBrowser, bottombar: UIView)
 }

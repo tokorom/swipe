@@ -101,13 +101,6 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         slider.isHidden = true
 #endif
 
-        if let toolbar = toolbar {
-            delegate?.toolbarDidLoad(browser: self, toolbar: toolbar)
-        }
-        if let bottombar = bottombar {
-            delegate?.bottombarDidLoad(browser: self, bottombar: bottombar)
-        }
-
         if let document = self.jsonDocument {
             self.openDocument(document, localResource: true)
         } else if let url = self.url {
@@ -169,7 +162,7 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         if documentViewer.hideUI() {
             let tap = UITapGestureRecognizer(target: self, action: #selector(SwipeBrowser.tapped))
             self.view.addGestureRecognizer(tap)
-            hideUI()
+            hideUI(force: true, animating: false)
         } else if let toolbar = self.toolbar, let bottombar = self.bottombar {
             rcFrame.origin.y = toolbar.bounds.size.height
             rcFrame.size.height -= rcFrame.origin.y + bottombar.bounds.size.height
@@ -322,18 +315,27 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     
     private func showUI() {
         fVisibleUI = true
-        UIView.animate(withDuration: 0.2, animations: { () -> Void in
-            self.toolbar?.alpha = 1.0
-            self.bottombar?.alpha = 1.0
-        })
+        if !(delegate?.showUI(browser: self) ?? false) {
+            UIView.animate(withDuration: 0.2, animations: { () -> Void in
+                self.toolbar?.alpha = 1.0
+                self.bottombar?.alpha = 1.0
+            })
+        }
     }
     
-    private func hideUI() {
+    private func hideUI(force: Bool = false, animating: Bool = true) {
         fVisibleUI = false
-        UIView.animate(withDuration: 0.2, animations: { () -> Void in
-            self.toolbar?.alpha = 0.0
-            self.bottombar?.alpha = 0.0
-        })
+        if force || !(delegate?.hideUI(browser: self) ?? false) {
+            let animations: () -> Void = {
+                self.toolbar?.alpha = 0.0
+                self.bottombar?.alpha = 0.0
+            }
+            if animating {
+                UIView.animate(withDuration: 0.2, animations: animations)
+            } else {
+                animations()
+            }
+        }
     }
 
     @IBAction func slided(_ sender:UISlider) {
@@ -465,6 +467,6 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
 
 protocol SwipeBrowserDelegate: NSObjectProtocol {
     func pageDidAdvance(browser: SwipeBrowser, to index: Int)
-    func toolbarDidLoad(browser: SwipeBrowser, toolbar: UIView)
-    func bottombarDidLoad(browser: SwipeBrowser, bottombar: UIView)
+    func showUI(browser: SwipeBrowser) -> Bool
+    func hideUI(browser: SwipeBrowser) -> Bool
 }

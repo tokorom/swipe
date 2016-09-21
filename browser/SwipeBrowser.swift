@@ -395,6 +395,10 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
     }
 
     @IBAction func close(_ sender:AnyObject) {
+        close()
+    }
+
+    public func close() {
 #if os(OSX)
         self.presentingViewController!.dismissViewController(self)
 #else
@@ -434,7 +438,7 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
         }
     }
 
-    @IBAction func language() {
+    @IBAction public func language() {
         if let languages = documentViewer?.languages() {
             let alert = UIAlertController(title: "Swipe", message: "Choose a language", preferredStyle: UIAlertControllerStyle.actionSheet)
             alert.popoverPresentationController?.sourceView = self.view

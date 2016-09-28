@@ -304,6 +304,13 @@ class SwipeBrowser: UIViewController, SwipeDocumentViewerDelegate {
             : UIInterfaceOrientationMask.portrait
     }
 
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        if let documentViewer = self.documentViewer, documentViewer.landscape() {
+            return .landscapeLeft
+        }
+        return landscapeMode ? .landscapeLeft : .portrait
+    }
+
     @IBAction func tapped() {
         MyLog("SWBrows tapped", level: 1)
         if fVisibleUI {

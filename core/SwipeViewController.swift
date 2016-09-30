@@ -597,14 +597,14 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     //
     // EXPERIMENTAL: Public interface, which allows applications to scroll it to a particular scrolling position. Notice that it will play "scroll" animations, but not "auto" animations.
     //
-    func scrollTo(_ amount:CGFloat) {
+    func scrollTo(_ amount:CGFloat, animated:Bool = false) {
         let pageIndex = Int(amount)
         if pageIndex < self.book.pages.count {
             let frame = scrollView.frame
             let rem = amount - CGFloat(pageIndex)
             adjustIndex(pageIndex, fForced: false, fDeferredEnter: false)
             let offset = self.book.horizontal ? CGPoint(x: (CGFloat(self.book.pageIndex) + rem) * frame.size.width, y: 0) : CGPoint(x: 0, y: (CGFloat(self.book.pageIndex) + rem) * frame.size.height)
-            scrollView.contentOffset = offset
+            scrollView.setContentOffset(offset, animated: animated)
         }
     }
 }

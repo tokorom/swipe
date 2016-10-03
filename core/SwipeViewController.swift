@@ -30,6 +30,7 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
     private let notificationManager = SNNotificationManager()
     private var detectedTerminate = false
     private var beforePageIndex = -1
+    private var disappeared = false
 #if os(tvOS)
     // scrollingTarget has an index to the target page during the scrolling animation
     // as the result of swiping
@@ -180,10 +181,22 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
             // Therefore, we need to recreate all the pages. 
             //
             // Without this delay, the manual animation won't work after putting the app in the background once.
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(300 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.adjustIndex(self.book.pageIndex, fForced: true)
             }
         }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if disappeared {
+            self.adjustIndex(self.book.pageIndex, fForced: true)
+        }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.disappeared = true
     }
 
 #if os(tvOS)

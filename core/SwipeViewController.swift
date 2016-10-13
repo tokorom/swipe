@@ -42,6 +42,11 @@ class SwipeViewController: UIViewController, UIScrollViewDelegate, SwipeDocument
         let scrollView = UIScrollView()
 #if os(iOS)
         scrollView.isPagingEnabled = true // paging is not available for tvOS
+        if self.book.horizontal {
+            scrollView.alwaysBounceHorizontal = true
+        } else {
+            scrollView.alwaysBounceVertical = true
+        }
 #endif
         scrollView.delegate = self
         return scrollView
